@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+  <title>Bikes at Tooley Street</title>
+</head>
+ 
+<body>
+ 
+  <script>
+function httpGetAsync(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+	xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+	
+	
+	
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+		    var response = JSON.parse( xmlHttp.responseText);
+			
+			 document.getElementById('number').innerHTML = response.additionalProperties[6].value;
+    }
+    
+}
+  </script>
+   
+  <button onclick="httpGetAsync('https://api-prod6.tfl.gov.uk/Place/BikePoints_732')"> Click me </button>
+  
+  <p id="AvailableBikes">The number of available bikes at Duke Street Hill is: <b id=number><b/> </p>
+</body>
+ 
+</html>

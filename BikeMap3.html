@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWRXBeHNcEtZPVwFOvbYvUgGSTV1sAbbE&callback=initMap"async defer></script>
+	
+	<script>
+	
+	var latlng = [];
+	function myFunction(arr){
+		var i;
+		for(i = 0; i < arr.length; i++){
+		latlng[i] = [];
+			latlng[i][0] = arr[i].title;
+			latlng[i][1] = arr[i].lat;
+			latlng[i][2] = arr[i].lng;
+		}
+    }
+	
+      var map;
+	  var myLatLng;
+	  
+      function initMap() {
+	    myLatLng = {lat: 51.5072, lng: 0.1275};
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: myLatLng,
+          zoom: 10,
+		  mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+		var infowindow = new google.maps.InfoWindow();
+		for(var x = 0; x<latlng.length; x++){
+			var marker = new google.maps.Marker({
+				position: new google.maps.LatLng(latlng[x][1], latlng[x][2]),
+				map: map
+			});
+		
+
+		google.maps.event.addListener(marker, 'click', (function(marker, x) {
+        return function() {
+          infowindow.setContent(latlng[x][0]);
+          infowindow.open(map, marker);
+        }
+      })(marker, x));
+		}
+      }
+    </script>
+    
+	
+	<script src="locations.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+    
+
+</html>
