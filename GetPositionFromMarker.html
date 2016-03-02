@@ -1,0 +1,36 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWRXBeHNcEtZPVwFOvbYvUgGSTV1sAbbE&callback=initMap"async defer></script>
+	<script>
+	
+	function initMap() {
+		var london = {lat : 51.5072,lng : 0.1275};
+		
+		map = new google.maps.Map(document.getElementById('map'), {
+				center: london,
+				zoom: 10,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+		var marker = new google.maps.Marker({
+				position: london,
+				draggable: true,
+				map: map
+			});
+
+		google.maps.event.addListener(marker, 'dragend', function (ev) {
+				alert(marker.getPosition().lat());
+			});
+
+		}
+	</script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>

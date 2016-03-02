@@ -171,16 +171,18 @@ function initMap() {
 		});
 
 		var infowindow = new google.maps.InfoWindow();
-
-		var x = 0,
-		j = 0;
+		riverThamesCoordinates.sort;
+		bikeGeoLocationAndName.sort;
+		var x = 0, j = 0, k = 0;
 
 		var flag = false;
+		
 		for (; x < bikeGeoLocationAndName.length; x++) {
-
-			for (; j < (riverThamesCoordinates.length- 1); j++) {
-				if (riverThamesCoordinates[j].lat > bikeGeoLocationAndName[x][1]) {
-					flag = true;
+			for (; j < (riverThamesCoordinates.length - 1); j++) {
+				if ((bikeGeoLocationAndName[x][2] >= riverThamesCoordinates[j].lng) && (bikeGeoLocationAndName[x][2] <= riverThamesCoordinates[j + 1].lng)) {
+					if (riverThamesCoordinates[j].lat >= bikeGeoLocationAndName[x][1]) {
+						flag = true;
+					}
 				}
 			}
 			j = 0;
@@ -203,7 +205,7 @@ function initMap() {
 						infowindow.open(map, marker);
 					}
 				})(marker, x));
-		}
+		} //for
 	});
 }
 	function myFunction(arr) {
