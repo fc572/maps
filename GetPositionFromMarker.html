@@ -6,17 +6,18 @@
     <title>Simple markers</title>
     <style>
       html, body {
-        height: 100%;
+        height: 80%;
         margin: 0;
         padding: 0;
       }
       #map {
-        height: 100%;
+        height: 80%;
       }
     </style>
   </head>
   <body>
     <div id="map"></div>
+	<div id="coords"></div>
     <script>
 
       function initMap() {
@@ -33,9 +34,11 @@
           map: map,
           title: 'Hello World!'
         });
-		var latln = [], i=0;
+		var latln = [], i=0, stringAll;
 		google.maps.event.addListener(marker, 'dragend', function latfn(ev) {
 				latln[i] = "{\"" + marker.getPosition().lat()+ "\":\""+marker.getPosition().lng()+"\"}";
+				stringAll += latln[i];
+				document.getElementById("coords").innerText = stringAll;
 				i++;
 			});
       }
