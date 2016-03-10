@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+	
+	<script>
+
+	var latlng = [];
+	var bikeGeoLocationAndName = [];
+function initMap() {
+	var map;
+
+	var london = {lat : 51.5072, lng : 0.1275};
+	
+	map = new google.maps.Map(document.getElementById('map'), {
+			center : london,
+			zoom : 10,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		});
+
+	httpGetAsync("https://api.tfl.gov.uk/BikePoint", function locationApi(response) {
+		for (var i = 0; i < response.length; i++) {
+			bikeGeoLocationAndName[i] = [];
+			bikeGeoLocationAndName[i][0] = response[i].commonName;
+			bikeGeoLocationAndName[i][1] = response[i]["lat"];
+			bikeGeoLocationAndName[i][2] = response[i]["lon"];
+		}
+
+		bikeGeoLocationAndName.push.apply(bikeGeoLocationAndName, latlng);
+
+		new google.maps.Polyline({
+			path : riverThamesCoordinates,
+			geodesic : true,
+			strokeColor : '#000000',
+			strokeOpacity : 1.0,
+			strokeWeight : 5,
+			map : map
+		});
+
+		var infowindow = new google.maps.InfoWindow();
+		riverThamesCoordinates.sort;
+		bikeGeoLocationAndName.sort;
+		var x = 0, j = 0, k = 0;
+
+		var flag = false;
+		
+		for (; x < bikeGeoLocationAndName.length; x++) {
+			for (; j < (riverThamesCoordinates.length - 1); j++) {
+				if ((bikeGeoLocationAndName[x][2] >= riverThamesCoordinates[j].lng) && (bikeGeoLocationAndName[x][2] <= riverThamesCoordinates[j + 1].lng)) {
+					if (riverThamesCoordinates[j].lat >= bikeGeoLocationAndName[x][1]) {
+						flag = true;
+					}
+				}
+			}
+			j = 0;
+			if (flag) {
+				var marker = new google.maps.Marker({
+						position : new google.maps.LatLng(bikeGeoLocationAndName[x][1], bikeGeoLocationAndName[x][2]),
+						map : map,
+						icon : "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+					});
+				flag = false;
+			} else {
+				var marker = new google.maps.Marker({
+						position : new google.maps.LatLng(bikeGeoLocationAndName[x][1], bikeGeoLocationAndName[x][2]),
+						map : map
+					});
+			}
+			google.maps.event.addListener(marker, 'click', (function (marker, x) {
+					return function () {
+						infowindow.setContent(bikeGeoLocationAndName[x][0]);
+						infowindow.open(map, marker);
+					}
+				})(marker, x));
+		} //for
+	});
+}
+	function myFunction(arr) {
+		var i;
+		for (i = 0; i < arr.length; i++) {
+			latlng[i] = [];
+			latlng[i][0] = arr[i].title;
+			latlng[i][1] = arr[i].lat;
+			latlng[i][2] = arr[i].lng;
+		}
+	}
+
+	function httpGetAsync(theUrl, callback) {
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.open("GET", theUrl, true); // true for asynchronous
+		xmlHttp.send(null);
+
+		xmlHttp.onreadystatechange = function () {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+				callback(JSON.parse(xmlHttp.responseText));
+		}
+	}
+ </script>
+	   <script src="locations.js"></script>	
+       <script src="riverThamesCoordinates.js"></script>		   
+	   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWRXBeHNcEtZPVwFOvbYvUgGSTV1sAbbE&callback=initMap"async defer></script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
